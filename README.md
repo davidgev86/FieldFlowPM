@@ -160,7 +160,9 @@ npm run db:studio    # Open Drizzle Studio (database GUI)
 npm run lint         # Check code for issues
 npm run lint:fix     # Auto-fix linting issues
 npm run format       # Format code with Prettier
+npm run format:check # Check if code is formatted
 npm run type-check   # TypeScript type checking
+npm run quality      # Run all quality checks
 ```
 
 ### Testing
@@ -290,12 +292,20 @@ QUICKBOOKS_CLIENT_SECRET=your-quickbooks-secret
 - **Database Operations** - Go through the storage interface
 - **Shared Types** - Define in `shared/schema.ts`
 
+### Code Quality
+- **ESLint** - Comprehensive linting with TypeScript, React, and accessibility rules
+- **Prettier** - Consistent code formatting across the project
+- **Pre-commit hooks** - Automatic linting and formatting on git commits
+- **Pre-push hooks** - Type checking and tests before pushing
+
 ### Best Practices
 - Write self-documenting code with clear variable names
 - Add JSDoc comments for complex functions
 - Use proper error handling with typed errors
 - Test critical paths with unit tests
 - Keep components small and focused
+
+See [CODE_STYLE.md](CODE_STYLE.md) for detailed style guidelines.
 
 ### Adding Features
 1. **Plan the data model** - Update `shared/schema.ts`
