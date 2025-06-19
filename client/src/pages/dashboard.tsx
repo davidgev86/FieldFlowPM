@@ -85,9 +85,16 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">This Month</p>
-                <p className="text-2xl font-bold text-project-green">
-                  {stats.monthlyRevenue}
-                </p>
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <LoadingSpinner className="h-4 w-4" />
+                    <span className="text-sm text-gray-500">Loading...</span>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-bold text-project-green">
+                    {stats.monthlyRevenue}
+                  </p>
+                )}
               </div>
               <DollarSign className="h-5 w-5 text-project-green" />
             </div>
@@ -99,9 +106,16 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Pending Approvals</p>
-                <p className="text-2xl font-bold text-alert-orange">
-                  {stats.pendingApprovals}
-                </p>
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <LoadingSpinner className="h-4 w-4" />
+                    <span className="text-sm text-gray-500">Loading...</span>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-bold text-alert-orange">
+                    {stats.pendingApprovals}
+                  </p>
+                )}
               </div>
               <Clock className="h-5 w-5 text-alert-orange" />
             </div>
@@ -113,9 +127,16 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Overdue Tasks</p>
-                <p className="text-2xl font-bold text-issue-red">
-                  {stats.overdueTasks}
-                </p>
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <LoadingSpinner className="h-4 w-4" />
+                    <span className="text-sm text-gray-500">Loading...</span>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-bold text-issue-red">
+                    {stats.overdueTasks}
+                  </p>
+                )}
               </div>
               <AlertTriangle className="h-5 w-5 text-issue-red" />
             </div>
@@ -127,10 +148,16 @@ export default function Dashboard() {
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">Active Projects</h2>
         
-        {activeProjects.length > 0 ? (
-          <div className="space-y-4">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <LoadingSpinner className="h-6 w-6" />
+          </div>
+        ) : activeProjects.length > 0 ? (
+          <div className="space-y-4 overflow-x-auto">
             {activeProjects.map((project: any) => (
-              <ProjectCard key={project.id} project={project} />
+              <div key={project.id} className="min-w-0">
+                <ProjectCard project={project} />
+              </div>
             ))}
           </div>
         ) : (
