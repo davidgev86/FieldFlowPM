@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import request from 'supertest';
 import express from 'express';
 import { registerRoutes } from '../../server/routes';
@@ -17,6 +17,11 @@ describe('Authentication API', () => {
     if (server) {
       server.close();
     }
+  });
+
+  beforeEach(() => {
+    // Clear any existing sessions before each test
+    vi.clearAllMocks();
   });
 
   describe('POST /api/auth/login', () => {

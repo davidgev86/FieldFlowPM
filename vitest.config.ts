@@ -8,11 +8,25 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        'dist/',
+        'build/',
+      ],
+    },
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './client/src'),
       '@assets': path.resolve(__dirname, './attached_assets'),
+      '@shared': path.resolve(__dirname, './shared'),
+      '@server': path.resolve(__dirname, './server'),
     },
   },
 });
