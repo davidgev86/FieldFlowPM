@@ -10,6 +10,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 // Pages
 import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
+import SimpleDashboard from "@/pages/simple-dashboard";
 import Projects from "@/pages/projects";
 import Schedule from "@/pages/schedule";
 import Costs from "@/pages/costs";
@@ -27,7 +28,7 @@ function AuthenticatedRoutes() {
         <Route path="/" exact>
           <Redirect to="/dashboard" />
         </Route>
-        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/dashboard" component={SimpleDashboard} />
         <Route path="/projects" component={Projects} />
         <Route path="/schedule" component={Schedule} />
         <Route path="/costs" component={Costs} />
