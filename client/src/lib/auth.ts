@@ -109,6 +109,10 @@ class AuthManager {
 
       const user = await response.json();
       this.user = user;
+      // Also update localStorage with the latest user data
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
       return user;
     } catch (error) {
       console.error('Session validation failed:', error);

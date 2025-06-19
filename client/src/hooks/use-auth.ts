@@ -31,6 +31,8 @@ export function useAuth() {
       const user = await authManager.login(username, password);
       setUser(user);
       setIsAuthenticated(true);
+      // Force a re-render by updating state
+      window.location.reload();
     } catch (error) {
       throw error;
     } finally {
