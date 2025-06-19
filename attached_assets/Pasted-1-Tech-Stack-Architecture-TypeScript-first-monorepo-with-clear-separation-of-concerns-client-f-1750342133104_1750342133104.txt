@@ -1,0 +1,71 @@
+1. Tech Stack & Architecture
+TypeScript-first monorepo with clear separation of concerns:
+
+client/ for your front-end (Vite + React + Tailwind)
+
+server/ for your back-end (Drizzle ORM config suggests a Node/Express or similar API layer)
+
+shared/ for cross-cutting types and interfaces
+
+Config files (tsconfig.json, vite.config.ts, tailwind.config.ts, drizzle.config.ts) are all in place — nice!
+
+2. Documentation & Onboarding
+Missing a top-level README.md. You’ll want:
+
+Project overview & feature list
+
+Prerequisites (Node version, database, env vars)
+
+Install & run steps (npm install, npm run dev, migrations, etc.)
+
+Deployment notes (how to push to Replit or another host)
+
+Consider adding a LICENSE file and a CONTRIBUTING.md if you plan to open this up to collaborators.
+
+3. Development Workflow
+Linting & Formatting:
+
+I don’t see ESLint or Prettier configs—adding these ensures consistent code style across client/server.
+
+Testing:
+
+No tests yet. At minimum, unit tests for critical shared logic and basic integration tests for your API routes will pay dividends.
+
+Scripts:
+
+Double-check your package.json scripts in both root and sub-folders. You might consolidate or add shortcuts for common tasks (e.g. npm run migrate, npm run test).
+
+4. Back-End Considerations
+Env Management:
+
+Make sure to document all required environment variables (DB URLs, API keys, secrets) and consider a .env.example.
+
+API Documentation:
+
+Adding Swagger/OpenAPI (or at least a Postman collection) will make it easier to onboard new front-end developers or API consumers.
+
+Error Handling & Security:
+
+Ensure you have global error middleware and input validation (e.g. zod or Joi) on your routes to prevent bad data from reaching your database.
+
+5. Front-End Considerations
+Component Structure:
+
+Keep components in client/src/components small and focused; use shared/ types for props.
+
+State Management:
+
+If you’re using React Context, tRPC, or Redux, document the data-flow patterns so it’s consistent as your app grows.
+
+Styling:
+
+Tailwind is set up nicely—consider enabling JIT mode (if you haven’t already) for faster dev builds.
+
+6. CI/CD & Deployment
+Replit Integration:
+
+Your .replit file is present—great. You could also add GitHub Actions to run lint/tests on every PR.
+
+Database Migrations:
+
+Automate migrations on deploy, or provide clear instructions for running them manually.
