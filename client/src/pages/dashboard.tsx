@@ -9,9 +9,6 @@ import { ProjectCard } from '@/components/project/ProjectCard';
 import { ProjectSchedule } from '@/components/project/ProjectSchedule';
 import { CostTracker } from '@/components/project/CostTracker';
 import { ChangeOrderList } from '@/components/project/ChangeOrderList';
-import { ClientPortalPreview } from '@/components/project/ClientPortalPreview';
-import { DailyLogList } from '@/components/project/DailyLogList';
-import { FileUpload } from '@/components/project/FileUpload';
 import { Hammer, DollarSign, Clock, AlertTriangle, Plus, Building2, TrendingUp } from 'lucide-react';
 
 export default function Dashboard() {
@@ -49,10 +46,11 @@ export default function Dashboard() {
 
   const activeProjects = projects?.filter((p: any) => p.status === 'active') || [];
   
-  // Calculate statistics
+  // Calculate statistics from real data
+  const totalBudget = projects?.reduce((sum: number, p: any) => sum + parseFloat(p.budgetTotal || '0'), 0) || 0;
   const stats = {
     activeProjects: activeProjects.length,
-    monthlyRevenue: '$127K', // This would be calculated from actual data
+    monthlyRevenue: `$${Math.round(totalBudget / 1000)}K`,
     pendingApprovals: 3, // This would come from change orders
     overdueTasks: 2, // This would come from task analysis
   };
@@ -96,16 +94,9 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">This Month</p>
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <LoadingSpinner className="h-4 w-4" />
-                    <span className="text-sm text-gray-500">Loading...</span>
-                  </div>
-                ) : (
-                  <p className="text-2xl font-bold text-project-green">
-                    {stats.monthlyRevenue}
-                  </p>
-                )}
+                <p className="text-2xl font-bold text-project-green">
+                  {stats.monthlyRevenue}
+                </p>
               </div>
               <DollarSign className="h-5 w-5 text-project-green" />
             </div>
@@ -117,16 +108,9 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Pending Approvals</p>
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <LoadingSpinner className="h-4 w-4" />
-                    <span className="text-sm text-gray-500">Loading...</span>
-                  </div>
-                ) : (
-                  <p className="text-2xl font-bold text-alert-orange">
-                    {stats.pendingApprovals}
-                  </p>
-                )}
+                <p className="text-2xl font-bold text-alert-orange">
+                  {stats.pendingApprovals}
+                </p>
               </div>
               <Clock className="h-5 w-5 text-alert-orange" />
             </div>
@@ -138,16 +122,9 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Overdue Tasks</p>
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <LoadingSpinner className="h-4 w-4" />
-                    <span className="text-sm text-gray-500">Loading...</span>
-                  </div>
-                ) : (
-                  <p className="text-2xl font-bold text-issue-red">
-                    {stats.overdueTasks}
-                  </p>
-                )}
+                <p className="text-2xl font-bold text-issue-red">
+                  {stats.overdueTasks}
+                </p>
               </div>
               <AlertTriangle className="h-5 w-5 text-issue-red" />
             </div>
@@ -310,7 +287,7 @@ function QuickActions({ userRole }: { userRole?: string }) {
   const actions = [
     { label: 'New Project', icon: Plus, available: userRole !== 'client' },
     { label: 'Daily Log', icon: Clock, available: true },
-    { label: 'Upload Document', icon: FileUpload, available: userRole !== 'client' },
+    { label: 'Upload Document', icon: Plus, available: userRole !== 'client' },
     { label: 'Add Contact', icon: Plus, available: userRole !== 'client' },
   ].filter(action => action.available);
 
