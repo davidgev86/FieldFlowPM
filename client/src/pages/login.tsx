@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
@@ -15,9 +15,16 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLocation('/dashboard');
+    }
+  }, [isAuthenticated, setLocation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,8 +46,7 @@ export default function Login() {
         title: "Welcome to FieldFlowPM!",
         description: "You have been successfully logged in.",
       });
-      // The Router component will handle the redirect automatically
-      // based on the updated authentication state
+      // Redirect will happen via useEffect when isAuthenticated changes
     } catch (error) {
       toast({
         title: "Login Failed",

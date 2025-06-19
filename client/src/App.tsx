@@ -73,11 +73,6 @@ function Router() {
     );
   }
 
-  // If authenticated and on login page, redirect to dashboard
-  if (isAuthenticated && location === '/login') {
-    return <Redirect to="/dashboard" />;
-  }
-
   return <AuthenticatedRoutes />;
 }
 
