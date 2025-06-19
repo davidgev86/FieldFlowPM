@@ -20,7 +20,7 @@ function generateSessionId(): string {
 
 // Authentication middleware
 function requireAuth(req: Request, res: Response, next: Function) {
-  const sessionId = req.headers.authorization?.replace('Bearer ', '');
+  const sessionId = req.cookies?.sessionId;
   
   if (!sessionId) {
     return res.status(401).json({ message: "Authentication required" });
@@ -89,7 +89,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         createdAt: user.createdAt,
       };
 
-      res.json({ user: authUser, sessionId });
+      // Set secure HTTP-only cookie
+      res.cookie('sessionId', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      });
+
+      res.json(authUser);
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({ message: "Invalid input", errors: error.errors });
@@ -99,10 +107,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/auth/logout", requireAuth, async (req: Request, res: Response) => {
-    const sessionId = req.headers.authorization?.replace('Bearer ', '');
+    const sessionId = req.cookies?.sessionId;
     if (sessionId) {
       sessions.delete(sessionId);
     }
+    
+    // Clear the cookie
+    res.clearCookie('sessionId');
     res.json({ message: "Logged out successfully" });
   });
 
