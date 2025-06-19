@@ -158,10 +158,11 @@ export default function Dashboard() {
         <FileUpload projectId={activeProjects[0]?.id || 0} />
       </div>
 
-      {/* Client Portal Preview for non-client users */}
-      {user?.role !== 'client' && activeProjects.length > 0 && (
-        <ClientPortalPreview project={activeProjects[0]} />
-      )}
+      {/* Cost and Change Order Overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CostTracker costs={[]} projectId={activeProjects[0]?.id || 0} />
+        <ChangeOrderList changeOrders={[]} projectId={activeProjects[0]?.id || 0} />
+      </div>
     </div>
   );
 }
