@@ -15,6 +15,8 @@ export default function Dashboard() {
   const { user } = useAuth();
   const { data: projects, isLoading, error } = useProjects();
 
+  console.log('Dashboard render:', { user, projects, isLoading, error });
+
   if (isLoading) {
     return (
       <div className="container mx-auto p-4 max-w-7xl">
@@ -29,17 +31,17 @@ export default function Dashboard() {
   }
 
   if (error) {
+    console.error('Dashboard error:', error);
     return (
       <div className="container mx-auto p-4 max-w-7xl">
-        <EmptyState
-          icon={AlertTriangle}
-          title="Unable to load dashboard"
-          description={`Error loading dashboard data: ${error.message}`}
-          action={{
-            label: 'Refresh Page',
-            onClick: () => window.location.reload()
-          }}
-        />
+        <div className="text-center py-8">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Unable to load dashboard</h2>
+          <p className="text-gray-600 mb-4">Error: {error.message}</p>
+          <Button onClick={() => window.location.reload()}>
+            Refresh Page
+          </Button>
+        </div>
       </div>
     );
   }

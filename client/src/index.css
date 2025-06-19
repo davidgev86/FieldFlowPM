@@ -105,6 +105,30 @@
   .bg-issue-red {
     background-color: var(--issue-red);
   }
+  
+  .text-construction-blue {
+    color: var(--construction-blue);
+  }
+  
+  .text-project-green {
+    color: var(--project-green);
+  }
+  
+  .text-alert-orange {
+    color: var(--alert-orange);
+  }
+  
+  .text-issue-red {
+    color: var(--issue-red);
+  }
+  
+  .issue-red {
+    color: var(--issue-red);
+  }
+  
+  .bg-issue-red {
+    background-color: var(--issue-red);
+  }
 }
 
 /* Font family for Roboto */
