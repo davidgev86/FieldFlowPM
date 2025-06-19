@@ -17,29 +17,22 @@ export function useAuth() {
         if (cachedAuth === 'true' && cachedUser) {
           try {
             const user = JSON.parse(cachedUser);
-            setUser(user);
-            setIsAuthenticated(true);
             
-            // Validate with server in background
-            authManager.validateSession().then((validatedUser) => {
-              if (!validatedUser) {
-                console.log('Server session validation failed, clearing cache');
-                setUser(null);
-                setIsAuthenticated(false);
-                authManager.clearSession();
-              } else {
-                // Update with fresh user data from server
-                setUser(validatedUser);
-                localStorage.setItem('user', JSON.stringify(validatedUser));
-              }
-            }).catch((error) => {
-              console.error('Background session validation failed:', error);
+            // Validate with server immediately for cached sessions
+            const validatedUser = await authManager.validateSession();
+            if (validatedUser) {
+              setUser(validatedUser);
+              setIsAuthenticated(true);
+              // Update cache with fresh data
+              localStorage.setItem('user', JSON.stringify(validatedUser));
+            } else {
+              console.log('Cached session invalid, clearing');
               setUser(null);
               setIsAuthenticated(false);
               authManager.clearSession();
-            });
+            }
           } catch (error) {
-            console.error('Failed to parse cached user data:', error);
+            console.error('Failed to validate cached session:', error);
             authManager.clearSession();
             setUser(null);
             setIsAuthenticated(false);
@@ -75,13 +68,9 @@ export function useAuth() {
     try {
       const user = await authManager.login(username, password);
       
-      // Update state synchronously
+      // Update state immediately
       setUser(user);
       setIsAuthenticated(true);
-      
-      // Store in localStorage for persistence
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify(user));
       
       return user;
     } catch (error) {

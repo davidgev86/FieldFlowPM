@@ -1,13 +1,6 @@
 import { AuthUser } from "@shared/schema";
 
-export interface AuthState {
-  user: AuthUser | null;
-  sessionId: string | null;
-  isAuthenticated: boolean;
-}
-
 class AuthManager {
-  private sessionId: string | null = null;
   private user: AuthUser | null = null;
 
   constructor() {
@@ -19,11 +12,9 @@ class AuthManager {
     if (typeof window === 'undefined') return;
     
     try {
-      const sessionId = localStorage.getItem('sessionId');
       const userData = localStorage.getItem('user');
       
-      if (sessionId && userData) {
-        this.sessionId = sessionId;
+      if (userData) {
         this.user = JSON.parse(userData);
       }
     } catch (error) {
@@ -128,24 +119,6 @@ class AuthManager {
       console.error('Session validation failed:', error);
       return null;
     }
-  }
-
-  getAuthHeaders(): Record<string, string> {
-    if (!this.sessionId) {
-      return {};
-    }
-    
-    return {
-      'Authorization': `Bearer ${this.sessionId}`,
-    };
-  }
-
-  getAuthState(): AuthState {
-    return {
-      user: this.user,
-      sessionId: this.sessionId,
-      isAuthenticated: !!this.user && !!this.sessionId,
-    };
   }
 
   getCurrentUser(): AuthUser | null {
