@@ -5,9 +5,9 @@ import { Project, InsertProject, ProjectTask, CostCategory, ChangeOrder, DailyLo
 const apiRequest = async (url: string, options: RequestInit = {}) => {
   const response = await fetch(url, {
     ...options,
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      ...authManager.getAuthHeaders(),
       ...options.headers,
     },
   });
