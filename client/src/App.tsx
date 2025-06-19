@@ -23,7 +23,7 @@ import NotFound from "@/pages/not-found";
 function AuthenticatedRoutes() {
   const [location, setLocation] = useLocation();
   
-  // Redirect root to dashboard
+  // Handle root path redirect
   if (location === "/") {
     setLocation("/dashboard");
     return null;

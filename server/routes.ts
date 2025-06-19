@@ -498,6 +498,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Let the frontend handle all non-API routes
+  // This will be handled by the Vite dev server or static file serving
+
   const httpServer = createServer(app);
   return httpServer;
 }
