@@ -1,0 +1,142 @@
+**Product Definition Report (PDR)**
+
+---
+
+## 0. Overview
+
+A responsive **web application** (desktop & mobile browsers) that gives small construction contractors an all‑in‑one workspace to plan, track and communicate projects while on‑site. *Not* a native mobile app; it must simply **work flawlessly from a phone browser in the field**.
+
+Replit AI should choose the most suitable technologies, libraries and deployment workflow. **No tech‑stack guidance is included here by design.**
+
+---
+
+## 1. Purpose & Vision
+
+Small contractors juggle multiple roles with little admin support and tight budgets. Existing software is either too costly, too complex or too limited. This product delivers the **clarity of enterprise tools at a price and simplicity that a 2‑10‑person firm can embrace**, cutting admin time, reducing cost overruns and impressing clients.
+
+---
+
+## 2. Core User Personas
+
+| Persona                       | Primary Goals                                                                   | Typical Pain Points                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **Owner‑Operator / Small GC** | Deliver projects on time & on budget; keep clients happy; avoid admin overload. | Disjointed spreadsheets, poor schedule visibility, surprise cost overruns. |
+| **Project Manager / Foreman** | Know today’s tasks; log daily progress; coordinate subs.                        | Paper/whiteboard schedules, scattered photos, forgotten change orders.     |
+| **Subcontractor**             | See schedule; receive updates; upload completion photos.                        | Late schedule changes, missing docs, unclear scope.                        |
+| **Client / Homeowner**        | Transparent progress view; quick approval of changes; pay invoices.             | Endless texts/emails, uncertainty on budget and timeline.                  |
+| **Bookkeeper / Accountant**   | Keep books in sync; reconcile job costs.                                        | Manual double entry between PM tool and QuickBooks.                        |
+
+---
+
+## 3. Problem Statement
+
+> *“I’m running three remodels at once. My whiteboard schedule is outdated by lunch, clients keep texting for updates, and I won’t know if I’m over budget until my accountant closes the month.”*
+
+The lack of an affordable, intuitive project management system forces small contractors into cobbled‑together spreadsheets, calendars and message threads, leading to schedule slips, cost overruns, lost documents and unhappy clients.
+
+---
+
+## 4. Product Scope (MVP)
+
+### 4.1 Functional Requirements
+
+1. **Project Dashboard** – list active jobs with status, budget burn, and next milestone.
+2. **Visual Schedule** – per‑project Gantt or drag‑and‑drop calendar visible to internal staff & subs.
+3. **Job Cost Tracker** – budget vs. actual table; pull actual costs from QuickBooks Online (one‑way sync at MVP).
+4. **Change Order Workflow** – create, price and route for **e‑signature approval**; auto‑adjust contract total.
+5. **Client Portal** – secure link or login showing schedule, photos, contract, approved change orders and outstanding balance.
+6. **Document & Photo Storage** – per‑project folders; drag‑and‑drop upload; snap‑and‑send photos from phone.
+7. **Daily Log** – quick entry of on‑site activities (crew, weather, notes, photos).
+8. **Basic Contact/CRM Lite** – store clients, subs & vendors; assign to projects; simple lead list optional.
+9. **Role‑Based Access & Permissions** – Admin, Employee, Subcontractor, Client.
+10. **Notifications** – email (and optional SMS) when schedule changes, change order awaits approval, etc.
+
+### 4.2 Non‑Functional Requirements
+
+* **Responsive first**: Must render and operate smoothly on 6" phone screens and larger.
+* **Usability**: New user should accomplish core tasks within 30 min, no formal training.
+* **Performance**: Page loads <2 s on 4G; real‑time updates under 1 s.
+* **Reliability**: 99.5 % uptime target; graceful degradation if offline briefly.
+* **Security & Privacy**: All data encrypted in transit & at rest; role‑based access enforced server‑side.
+* **Accessibility**: WCAG AA compliance where practical.
+* **Scalability**: Support up to 100 concurrent projects and 50 users for a single company without degradation.
+* **Cost Sensitivity**: Entry tier price point ≤ US \$99 / month for up to 3 internal users.
+
+### 4.3 Out‑of‑Scope for MVP
+
+* Full two‑way accounting sync (push bills/invoices back to QuickBooks).
+* Native iOS/Android apps.
+* Detailed estimating/take‑off tooling (CSV import acceptable for now).
+* Advanced CRM automation, marketing campaigns.
+* RFI/Submittal workflows (commercial‑grade features).
+
+---
+
+## 5. Key User Stories (MVP)
+
+1. **Owner schedules project phases**
+   *Given a new project*, I can build a timeline by dragging tasks on a calendar so that subs instantly see their start dates.
+2. **Foreman logs daily progress**
+   *At end of day on site*, I can add a log with photos from my phone so the office and client are updated without texts.
+3. **Client approves change order**
+   *When the scope changes*, I receive an email, open the portal on my phone, tap “Approve”, and the budget updates.
+4. **Bookkeeper reviews costs**
+   *Weekly*, actual expenses from QuickBooks sync into the Job Cost Tracker so we can spot overruns early.
+
+---
+
+## 6. Data & Integration Requirements
+
+* **Accounting**: QuickBooks Online (OAuth2) – read Expenses, Invoices, Customers.
+* **Import/Export**: CSV for estimates & contacts; PDF generation for change orders.
+* **Email**: Transactional email service for notifications.
+* **Optional**: Webhook/Zapier endpoints for future automation.
+
+---
+
+## 7. Success Metrics
+
+| Metric                                       | Target at 6 months post‑launch |
+| -------------------------------------------- | ------------------------------ |
+| Weekly Active Contractors                    | ≥ 100 companies                |
+| Avg. time to create first project            | ≤ 15 min                       |
+| Avg. monthly retention                       | ≥ 85 %                         |
+| Support tickets per active company per month | < 0.3                          |
+| NPS                                          | ≥ 45                           |
+
+---
+
+## 8. Assumptions & Constraints
+
+* Users have basic smartphone & internet access on job sites.
+* Contractors accept cloud‑hosted solutions; no on‑prem install needed.
+* Initial target market: US & Canada residential remodelers and small GCs.
+* Budget and timeline limited to what an indie developer or small team can deliver within \~6 months.
+
+---
+
+## 9. Roadmap Beyond MVP (High‑Level)
+
+1. **Phase 2** – Two‑way QuickBooks sync; Stripe client payments; offline‑first mode.
+2. **Phase 3** – Advanced CRM & lead pipeline; take‑off & estimating module.
+3. **Phase 4** – RFI, Submittals, AIA billing, integrations with plan management tools.
+
+---
+
+## 10. Glossary of Roles
+
+* **Admin** – Company owner/manager, full rights.
+* **Employee** – Internal staff, manage projects & finances.
+* **Subcontractor** – External partner, read‑only schedule & docs, upload logs.
+* **Client** – Homeowner or GC customer, portal view & approvals only.
+
+---
+
+## 11. Approval & Next Steps
+
+1. Review and refine requirements with initial beta contractors (3‑5 firms).
+2. Create wireframes & click‑through prototype for usability validation.
+3. Start incremental implementation in Replit; deploy sprint releases for feedback.
+4. Prepare onboarding guides & sample data set for trial accounts.
+
+*End of PDR*
