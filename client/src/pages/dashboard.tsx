@@ -1,7 +1,9 @@
 import { useProjects } from '@/hooks/use-projects';
 import { useAuth } from '@/hooks/use-auth';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ProjectCard } from '@/components/project/ProjectCard';
 import { ProjectSchedule } from '@/components/project/ProjectSchedule';
@@ -10,29 +12,29 @@ import { ChangeOrderList } from '@/components/project/ChangeOrderList';
 import { ClientPortalPreview } from '@/components/project/ClientPortalPreview';
 import { DailyLogList } from '@/components/project/DailyLogList';
 import { FileUpload } from '@/components/project/FileUpload';
-import { Hammer, DollarSign, Clock, AlertTriangle, Plus } from 'lucide-react';
+import { Hammer, DollarSign, Clock, AlertTriangle, Plus, Building2, TrendingUp } from 'lucide-react';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { data: projects, isLoading, error } = useProjects();
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-64">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (error) {
     return (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="text-center text-red-600">
-            Error loading dashboard: {error.message}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="container mx-auto p-4 max-w-7xl">
+        <EmptyState
+          icon={AlertTriangle}
+          title="Unable to load dashboard"
+          description={`Error loading dashboard data: ${error.message}`}
+          action={{
+            label: 'Refresh Page',
+            onClick: () => window.location.reload()
+          }}
+        />
+      </div>
     );
   }
 
@@ -148,48 +150,208 @@ export default function Dashboard() {
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">Active Projects</h2>
         
-        {isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <LoadingSpinner className="h-6 w-6" />
-          </div>
-        ) : activeProjects.length > 0 ? (
-          <div className="space-y-4 overflow-x-auto">
+        {activeProjects.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {activeProjects.map((project: any) => (
-              <div key={project.id} className="min-w-0">
-                <ProjectCard project={project} />
-              </div>
+              <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         ) : (
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center py-8 text-gray-500">
-                <Hammer className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                <p>No active projects found.</p>
-                {user?.role !== 'client' && (
-                  <p className="text-sm mt-1">Create your first project to get started.</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          <EmptyState
+            icon={Hammer}
+            title="No active projects"
+            description={
+              user?.role !== 'client'
+                ? "Create your first project to get started with FieldFlowPM."
+                : "No projects have been assigned to you yet."
+            }
+            action={
+              user?.role !== 'client'
+                ? {
+                    label: 'Create Project',
+                    onClick: () => {
+                      // Navigate to project creation
+                      console.log('Navigate to project creation');
+                    },
+                  }
+                : undefined
+            }
+          />
         )}
       </div>
 
-      {/* Schedule Section */}
-      <ProjectSchedule projectId={activeProjects[0]?.id || 0} />
+      {/* Recent Activity and Quick Actions */}
+      {activeProjects.length > 0 && (
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <ProjectSchedule projectId={activeProjects[0]?.id || 0} />
+          </div>
+          <div className="space-y-6">
+            <QuickActions userRole={user?.role} />
+            <RecentActivity />
+          </div>
+        </div>
+      )}
 
-      {/* Cost Tracking and Other Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Daily Log and File Upload */}
-        <DailyLogList projectId={activeProjects[0]?.id || 0} />
-        <FileUpload projectId={activeProjects[0]?.id || 0} />
+      {/* Detailed Sections */}
+      {activeProjects.length > 0 && (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <CostTracker costs={[]} projectId={activeProjects[0]?.id || 0} />
+          <ChangeOrderList changeOrders={[]} projectId={activeProjects[0]?.id || 0} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Stats Card Component
+function StatsCard({
+  title,
+  value,
+  icon: Icon,
+  trend,
+  className,
+}: {
+  title: string;
+  value: string;
+  icon: any;
+  trend?: string;
+  className?: string;
+}) {
+  return (
+    <Card className="transition-all hover:shadow-md">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold">{value}</p>
+            {trend && (
+              <p className="text-xs text-muted-foreground flex items-center">
+                <TrendingUp className="h-3 w-3 mr-1" />
+                {trend}
+              </p>
+            )}
+          </div>
+          <div className={`rounded-full p-2 bg-gray-100 dark:bg-gray-800 ${className}`}>
+            <Icon className="h-5 w-5" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Dashboard Loading Skeleton
+function DashboardSkeleton() {
+  return (
+    <div className="container mx-auto p-4 space-y-6 max-w-7xl">
+      {/* Header Skeleton */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        <Skeleton className="h-10 w-32" />
       </div>
 
-      {/* Cost and Change Order Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <CostTracker costs={[]} projectId={activeProjects[0]?.id || 0} />
-        <ChangeOrderList changeOrders={[]} projectId={activeProjects[0]?.id || 0} />
+      {/* Stats Cards Skeleton */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Card key={i}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-8 w-16" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <Skeleton className="h-10 w-10 rounded-full" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Projects Section Skeleton */}
+      <div className="space-y-4">
+        <Skeleton className="h-6 w-40" />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i}>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-4 w-32" />
+                  <div className="flex justify-between">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
+  );
+}
+
+// Quick Actions Component
+function QuickActions({ userRole }: { userRole?: string }) {
+  const actions = [
+    { label: 'New Project', icon: Plus, available: userRole !== 'client' },
+    { label: 'Daily Log', icon: Clock, available: true },
+    { label: 'Upload Document', icon: FileUpload, available: userRole !== 'client' },
+    { label: 'Add Contact', icon: Plus, available: userRole !== 'client' },
+  ].filter(action => action.available);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">Quick Actions</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-2">
+        {actions.map((action, i) => (
+          <Button
+            key={i}
+            variant="ghost"
+            className="justify-start h-auto p-3"
+            onClick={() => console.log(`Action: ${action.label}`)}
+          >
+            <action.icon className="mr-3 h-4 w-4" />
+            {action.label}
+          </Button>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+// Recent Activity Component
+function RecentActivity() {
+  const activities = [
+    { action: 'Project updated', project: 'Kitchen Remodel', time: '2 hours ago' },
+    { action: 'Document uploaded', project: 'Bathroom Renovation', time: '4 hours ago' },
+    { action: 'Change order approved', project: 'Office Build-out', time: '1 day ago' },
+  ];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">Recent Activity</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {activities.map((activity, i) => (
+          <div key={i} className="flex items-start space-x-3 text-sm">
+            <div className="h-2 w-2 bg-blue-600 rounded-full mt-2 flex-shrink-0" />
+            <div className="space-y-1 min-w-0 flex-1">
+              <p className="font-medium">{activity.action}</p>
+              <p className="text-muted-foreground truncate">{activity.project}</p>
+              <p className="text-xs text-muted-foreground">{activity.time}</p>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }
