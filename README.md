@@ -162,4 +162,8 @@ Placeholder hooks are included for QuickBooks sync in the cost tracking module. 
 
 ## License
 
-Private project for construction management use.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, please contact the development team or open an issue in the project repository.
