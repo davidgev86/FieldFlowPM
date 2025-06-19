@@ -39,10 +39,8 @@ export default function Login() {
         title: "Welcome to FieldFlowPM!",
         description: "You have been successfully logged in.",
       });
-      // Small delay to ensure state updates, then redirect
-      setTimeout(() => {
-        setLocation('/dashboard');
-      }, 100);
+      // The Router component will handle the redirect automatically
+      // based on the updated authentication state
     } catch (error) {
       toast({
         title: "Login Failed",

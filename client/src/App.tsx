@@ -49,6 +49,7 @@ function AuthenticatedRoutes() {
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
+  const [location] = useLocation();
 
   if (isLoading) {
     return (
@@ -70,6 +71,11 @@ function Router() {
         </Route>
       </Switch>
     );
+  }
+
+  // If authenticated and on login page, redirect to dashboard
+  if (isAuthenticated && location === '/login') {
+    return <Redirect to="/dashboard" />;
   }
 
   return <AuthenticatedRoutes />;

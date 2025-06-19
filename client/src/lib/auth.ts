@@ -45,11 +45,12 @@ class AuthManager {
     }
   }
 
-  private clearSession() {
+  clearSession() {
     if (typeof window === 'undefined') return;
     
     localStorage.removeItem('sessionId');
     localStorage.removeItem('user');
+    localStorage.removeItem('isAuthenticated');
     this.sessionId = null;
     this.user = null;
   }
