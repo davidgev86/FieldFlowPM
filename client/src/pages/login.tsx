@@ -22,6 +22,7 @@ export default function Login() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
+      console.log('User is authenticated, redirecting to dashboard');
       setLocation('/dashboard');
     }
   }, [isAuthenticated, setLocation]);
@@ -41,12 +42,19 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      await login(username, password);
+      const user = await login(username, password);
+      
+      // Show success toast
       toast({
         title: "Welcome to FieldFlowPM!",
-        description: "You have been successfully logged in.",
+        description: `Welcome back, ${user.firstName}!`,
       });
-      // Redirect will happen via useEffect when isAuthenticated changes
+      
+      // Force immediate redirect after successful login
+      setTimeout(() => {
+        setLocation('/dashboard');
+      }, 100);
+      
     } catch (error) {
       toast({
         title: "Login Failed",

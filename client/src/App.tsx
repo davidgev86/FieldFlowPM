@@ -25,8 +25,12 @@ function AuthenticatedRoutes() {
   
   // Handle root path redirect
   if (location === "/") {
-    setLocation("/dashboard");
-    return null;
+    setTimeout(() => setLocation("/dashboard"), 0);
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner size="lg" text="Redirecting to dashboard..." />
+      </div>
+    );
   }
 
   return (
