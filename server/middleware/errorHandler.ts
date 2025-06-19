@@ -8,6 +8,13 @@ export interface ApiError extends Error {
   details?: any;
 }
 
+/**
+ * Global error handling middleware
+ * @param err - Error instance
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param next - Express next function
+ */
 export function errorHandler(err: ApiError | AppError, req: Request, res: Response, next: NextFunction) {
   // Log error for debugging
   console.error('API Error:', {
@@ -56,6 +63,11 @@ export function errorHandler(err: ApiError | AppError, req: Request, res: Respon
   });
 }
 
+/**
+ * 404 handler for unmatched routes
+ * @param req - Express request object
+ * @param res - Express response object
+ */
 export function notFoundHandler(req: Request, res: Response) {
   res.status(404).json({ 
     status: 'error',

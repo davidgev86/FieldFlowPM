@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodSchema } from 'zod';
 
+/**
+ * Middleware to validate request body against a Zod schema
+ * @param schema - Zod schema to validate against
+ * @returns Express middleware function
+ */
 export function validateBody(schema: ZodSchema) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -12,6 +17,11 @@ export function validateBody(schema: ZodSchema) {
   };
 }
 
+/**
+ * Middleware to validate request parameters against a Zod schema
+ * @param schema - Zod schema to validate against
+ * @returns Express middleware function
+ */
 export function validateParams(schema: ZodSchema) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -23,6 +33,11 @@ export function validateParams(schema: ZodSchema) {
   };
 }
 
+/**
+ * Middleware to validate query parameters against a Zod schema
+ * @param schema - Zod schema to validate against
+ * @returns Express middleware function
+ */
 export function validateQuery(schema: ZodSchema) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
