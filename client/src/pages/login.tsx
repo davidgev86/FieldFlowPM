@@ -22,7 +22,6 @@ export default function Login() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      console.log('User is authenticated, redirecting to dashboard');
       setLocation('/dashboard');
     }
   }, [isAuthenticated, setLocation]);
@@ -50,10 +49,7 @@ export default function Login() {
         description: `Welcome back, ${user.firstName}!`,
       });
       
-      // Force immediate redirect after successful login
-      setTimeout(() => {
-        setLocation('/dashboard');
-      }, 100);
+      // Redirect will happen via useEffect when isAuthenticated changes
       
     } catch (error) {
       toast({

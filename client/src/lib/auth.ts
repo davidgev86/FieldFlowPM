@@ -32,13 +32,12 @@ class AuthManager {
     }
   }
 
-  private saveSession(sessionId: string, user: AuthUser) {
+  private saveSession(user: AuthUser) {
     if (typeof window === 'undefined') return;
     
     try {
-      localStorage.setItem('sessionId', sessionId);
       localStorage.setItem('user', JSON.stringify(user));
-      this.sessionId = sessionId;
+      localStorage.setItem('isAuthenticated', 'true');
       this.user = user;
     } catch (error) {
       console.error('Failed to save session:', error);
@@ -48,76 +47,85 @@ class AuthManager {
   clearSession() {
     if (typeof window === 'undefined') return;
     
-    localStorage.removeItem('sessionId');
     localStorage.removeItem('user');
     localStorage.removeItem('isAuthenticated');
-    this.sessionId = null;
     this.user = null;
   }
 
   async login(username: string, password: string): Promise<AuthUser> {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+        credentials: 'include',
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Login failed');
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ message: 'Login failed' }));
+        throw new Error(error.message || 'Invalid credentials');
+      }
+
+      const user = await response.json();
+      
+      // Validate the response has required user data
+      if (!user || !user.id || !user.username) {
+        throw new Error('Invalid response from server');
+      }
+      
+      // Save session data
+      this.saveSession(user);
+      
+      return user;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error instanceof Error ? error : new Error('Login failed');
     }
-
-    const { user, sessionId } = await response.json();
-    this.saveSession(sessionId, user);
-    return user;
   }
 
   async logout() {
-    if (this.sessionId) {
-      try {
-        await fetch('/api/auth/logout', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${this.sessionId}`,
-          },
-        });
-      } catch (error) {
-        console.error('Logout request failed:', error);
-      }
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout request failed:', error);
     }
     
     this.clearSession();
   }
 
   async validateSession(): Promise<AuthUser | null> {
-    if (!this.sessionId) {
-      return null;
-    }
-
     try {
       const response = await fetch('/api/auth/me', {
+        credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${this.sessionId}`,
+          'Cache-Control': 'no-cache',
         },
       });
 
       if (!response.ok) {
-        this.clearSession();
+        if (response.status === 401) {
+          // Session expired, clear local storage
+          this.clearSession();
+        }
         return null;
       }
 
       const user = await response.json();
-      this.user = user;
-      // Also update localStorage with the latest user data
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('user', JSON.stringify(user));
+      
+      // Validate the response has required user data
+      if (!user || !user.id || !user.username) {
+        return null;
       }
+      
+      this.user = user;
       return user;
     } catch (error) {
       console.error('Session validation failed:', error);
-      this.clearSession();
       return null;
     }
   }

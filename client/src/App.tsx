@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect, useLocation } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
@@ -21,21 +21,12 @@ import ClientPortal from "@/pages/client-portal";
 import NotFound from "@/pages/not-found";
 
 function AuthenticatedRoutes() {
-  const [location, setLocation] = useLocation();
-  
-  // Handle root path redirect
-  if (location === "/") {
-    setTimeout(() => setLocation("/dashboard"), 0);
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner size="lg" text="Redirecting to dashboard..." />
-      </div>
-    );
-  }
-
   return (
     <AppLayout>
       <Switch>
+        <Route path="/" exact>
+          <Redirect to="/dashboard" />
+        </Route>
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/projects" component={Projects} />
         <Route path="/schedule" component={Schedule} />
@@ -53,31 +44,29 @@ function AuthenticatedRoutes() {
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
-  const [location] = useLocation();
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
+        <div className="text-center space-y-4">
           <LoadingSpinner size="lg" />
-          <p className="mt-4 text-gray-600">Loading FieldFlowPM...</p>
+          <p className="text-sm text-gray-600">Loading FieldFlowPM...</p>
         </div>
       </div>
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <Switch>
-        <Route path="/login" component={Login} />
-        <Route>
-          <Redirect to="/login" />
-        </Route>
-      </Switch>
-    );
-  }
-
-  return <AuthenticatedRoutes />;
+  return (
+    <Switch>
+      <Route path="/login">
+        {isAuthenticated ? <Redirect to="/dashboard" /> : <Login />}
+      </Route>
+      
+      <Route path="/">
+        {isAuthenticated ? <AuthenticatedRoutes /> : <Redirect to="/login" />}
+      </Route>
+    </Switch>
+  );
 }
 
 function App() {
