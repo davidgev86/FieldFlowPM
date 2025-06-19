@@ -49,6 +49,9 @@ FieldFlowPM streamlines project management with real-time collaboration, mobile-
 - ESLint & Prettier for code quality
 - Vitest for testing
 - GitHub Actions for CI/CD
+- Husky for Git hooks
+- Automated dependency updates with Dependabot
+- CodeQL security analysis
 
 ## 📋 Prerequisites
 
@@ -162,7 +165,6 @@ npm run lint:fix     # Auto-fix linting issues
 npm run format       # Format code with Prettier
 npm run format:check # Check if code is formatted
 npm run type-check   # TypeScript type checking
-npm run quality      # Run all quality checks
 ```
 
 ### Testing

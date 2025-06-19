@@ -1,0 +1,45 @@
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "maintainers"
+    assignees:
+      - "maintainers"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Group security updates
+    groups:
+      security-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "security"
+      # Group dev dependencies
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+          - "@typescript-eslint/*"
+          - "eslint*"
+          - "prettier"
+          - "husky"
+          - "lint-staged"
+          - "vitest"
+          - "@vitest/*"
+        update-types:
+          - "minor"
+          - "patch"
+    # Auto-merge patch updates for dev dependencies
+    auto-merge:
+      - match:
+          update-type: "security"
+      - match:
+          dependency-type: "development"
+          update-type: "semver:patch"
