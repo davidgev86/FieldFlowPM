@@ -5,9 +5,11 @@ export default function SimpleDashboard() {
   const { user } = useAuth();
   const { data: projects, isLoading, error } = useProjects();
 
+  console.log('SimpleDashboard render:', { user, projects, isLoading, error });
+
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">FieldFlowPM Dashboard</h1>
+    <div className="p-8 bg-white min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-blue-600">FieldFlowPM Dashboard</h1>
       
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Welcome, {user?.firstName}!</h2>

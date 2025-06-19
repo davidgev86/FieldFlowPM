@@ -23,23 +23,37 @@ import NotFound from "@/pages/not-found";
 
 function AuthenticatedRoutes() {
   return (
-    <AppLayout>
-      <Switch>
-        <Route path="/" exact>
-          <Redirect to="/dashboard" />
-        </Route>
-        <Route path="/dashboard" component={SimpleDashboard} />
-        <Route path="/projects" component={Projects} />
-        <Route path="/schedule" component={Schedule} />
-        <Route path="/costs" component={Costs} />
-        <Route path="/change-orders" component={ChangeOrders} />
-        <Route path="/documents" component={Documents} />
-        <Route path="/daily-log" component={DailyLog} />
-        <Route path="/contacts" component={Contacts} />
-        <Route path="/client-portal" component={ClientPortal} />
-        <Route component={NotFound} />
-      </Switch>
-    </AppLayout>
+    <Switch>
+      <Route path="/" exact>
+        <Redirect to="/dashboard" />
+      </Route>
+      <Route path="/dashboard" component={SimpleDashboard} />
+      <Route path="/projects">
+        <AppLayout><Projects /></AppLayout>
+      </Route>
+      <Route path="/schedule">
+        <AppLayout><Schedule /></AppLayout>
+      </Route>
+      <Route path="/costs">
+        <AppLayout><Costs /></AppLayout>
+      </Route>
+      <Route path="/change-orders">
+        <AppLayout><ChangeOrders /></AppLayout>
+      </Route>
+      <Route path="/documents">
+        <AppLayout><Documents /></AppLayout>
+      </Route>
+      <Route path="/daily-log">
+        <AppLayout><DailyLog /></AppLayout>
+      </Route>
+      <Route path="/contacts">
+        <AppLayout><Contacts /></AppLayout>
+      </Route>
+      <Route path="/client-portal">
+        <AppLayout><ClientPortal /></AppLayout>
+      </Route>
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
