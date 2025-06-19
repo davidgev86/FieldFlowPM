@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,6 +17,7 @@ export default function Login() {
   
   const { login } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +39,10 @@ export default function Login() {
         title: "Welcome to FieldFlowPM!",
         description: "You have been successfully logged in.",
       });
+      // Small delay to ensure state updates, then redirect
+      setTimeout(() => {
+        setLocation('/dashboard');
+      }, 100);
     } catch (error) {
       toast({
         title: "Login Failed",
