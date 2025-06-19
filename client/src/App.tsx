@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
@@ -21,6 +21,14 @@ import ClientPortal from "@/pages/client-portal";
 import NotFound from "@/pages/not-found";
 
 function AuthenticatedRoutes() {
+  const [location, setLocation] = useLocation();
+  
+  // Redirect root to dashboard
+  if (location === "/") {
+    setLocation("/dashboard");
+    return null;
+  }
+
   return (
     <AppLayout>
       <Switch>
@@ -33,9 +41,6 @@ function AuthenticatedRoutes() {
         <Route path="/daily-log" component={DailyLog} />
         <Route path="/contacts" component={Contacts} />
         <Route path="/client-portal" component={ClientPortal} />
-        <Route path="/">
-          <Redirect to="/dashboard" />
-        </Route>
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
