@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Configuration files
+*.config.js
+*.config.ts
+vite.config.ts
+tailwind.config.ts
+postcss.config.js
+drizzle.config.ts
+
+# Generated files
+coverage/
+.nyc_output/
+
+# Third-party
+public/vendor/
+
+# Environment
+.env*
