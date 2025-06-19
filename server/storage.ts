@@ -123,7 +123,7 @@ export class MemStorage implements IStorage {
       id: 1,
       username: "admin",
       email: "admin@abcconstruction.com",
-      password: "$2b$10$rHH0OazfqRG0UGMNTLdAOOjCTCIwGZ7RbgqgWUjg4OKu8oN6.nTtW", // password: "admin123"
+      password: "$2b$10$yK7P6iJ8euKMG02l2y7T6eGwjmg7bC0LcRNIqFWtyhmi.p4OwcuFK", // password: "admin123"
       firstName: "John",
       lastName: "Doe",
       role: "admin",
@@ -139,7 +139,7 @@ export class MemStorage implements IStorage {
       id: 2,
       username: "maria.johnson",
       email: "maria@email.com",
-      password: "$2b$10$rHH0OazfqRG0UGMNTLdAOOjCTCIwGZ7RbgqgWUjg4OKu8oN6.nTtW", // password: "client123"
+      password: "$2b$10$eVNF1mNWStRr1q8Om5udS.Vw41s7ArzQiGgKjZMnhDa2rjcbtUHWG", // password: "client123"
       firstName: "Maria",
       lastName: "Johnson",
       role: "client",
