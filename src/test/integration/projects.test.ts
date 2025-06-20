@@ -1,0 +1,251 @@
+import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
+import request from 'supertest';
+import { createApp } from '@server/app';
+import type { Express } from 'express';
+
+describe('Projects API', () => {
+  let app: Express;
+  let authCookies: string[];
+
+  beforeAll(async () => {
+    const { app: testApp } = await createApp({ 
+      isDevelopment: false, 
+      setupViteMiddleware: false 
+    });
+    app = testApp;
+  });
+
+  beforeEach(async () => {
+    // Login before each test to get fresh session
+    const loginRes = await request(app)
+      .post('/api/auth/login')
+      .send({ username: 'admin', password: 'admin123' });
+
+    authCookies = loginRes.headers['set-cookie'];
+  });
+
+  describe('GET /api/projects', () => {
+    it('should return projects for authenticated user', async () => {
+      const res = await request(app)
+        .get('/api/projects')
+        .set('Cookie', authCookies);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toBeInstanceOf(Array);
+      expect(res.body.length).toBeGreaterThan(0);
+      
+      // Check structure of first project
+      const project = res.body[0];
+      expect(project).toHaveProperty('id');
+      expect(project).toHaveProperty('name');
+      expect(project).toHaveProperty('description');
+      expect(project).toHaveProperty('status');
+      expect(project).toHaveProperty('startDate');
+      expect(project).toHaveProperty('budget');
+      expect(project).toHaveProperty('companyId');
+      expect(project).toHaveProperty('clientId');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const res = await request(app)
+        .get('/api/projects');
+
+      expect(res.status).toBe(401);
+      expect(res.body).toHaveProperty('message');
+    });
+  });
+
+  describe('GET /api/projects/:id', () => {
+    it('should return specific project for authenticated user', async () => {
+      const res = await request(app)
+        .get('/api/projects/1')
+        .set('Cookie', authCookies);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('id', 1);
+      expect(res.body).toHaveProperty('name');
+      expect(res.body).toHaveProperty('description');
+      expect(res.body).toHaveProperty('status');
+    });
+
+    it('should return 404 for non-existent project', async () => {
+      const res = await request(app)
+        .get('/api/projects/999')
+        .set('Cookie', authCookies);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty('message');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const res = await request(app)
+        .get('/api/projects/1');
+
+      expect(res.status).toBe(401);
+      expect(res.body).toHaveProperty('message');
+    });
+  });
+
+  describe('POST /api/projects', () => {
+    it('should create new project with valid data', async () => {
+      const newProject = {
+        name: 'Test Project',
+        description: 'A test project for integration testing',
+        status: 'planning',
+        startDate: '2024-01-01',
+        endDate: '2024-12-31',
+        budget: 50000,
+        companyId: 1,
+        clientId: 2
+      };
+
+      const res = await request(app)
+        .post('/api/projects')
+        .set('Cookie', authCookies)
+        .send(newProject);
+
+      expect(res.status).toBe(201);
+      expect(res.body).toHaveProperty('id');
+      expect(res.body).toHaveProperty('name', newProject.name);
+      expect(res.body).toHaveProperty('description', newProject.description);
+      expect(res.body).toHaveProperty('status', newProject.status);
+      expect(res.body).toHaveProperty('budget', newProject.budget);
+    });
+
+    it('should return 400 for invalid project data', async () => {
+      const invalidProject = {
+        name: '', // Empty name should be invalid
+        description: 'Test description'
+      };
+
+      const res = await request(app)
+        .post('/api/projects')
+        .set('Cookie', authCookies)
+        .send(invalidProject);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('message');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const newProject = {
+        name: 'Test Project',
+        description: 'A test project',
+        status: 'planning',
+        startDate: '2024-01-01',
+        budget: 50000,
+        companyId: 1,
+        clientId: 2
+      };
+
+      const res = await request(app)
+        .post('/api/projects')
+        .send(newProject);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toHaveProperty('message');
+    });
+  });
+
+  describe('PUT /api/projects/:id', () => {
+    it('should update existing project with valid data', async () => {
+      const updates = {
+        name: 'Updated Project Name',
+        status: 'in_progress',
+        budget: 75000
+      };
+
+      const res = await request(app)
+        .put('/api/projects/1')
+        .set('Cookie', authCookies)
+        .send(updates);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('id', 1);
+      expect(res.body).toHaveProperty('name', updates.name);
+      expect(res.body).toHaveProperty('status', updates.status);
+      expect(res.body).toHaveProperty('budget', updates.budget);
+    });
+
+    it('should return 404 for non-existent project', async () => {
+      const updates = {
+        name: 'Updated Name'
+      };
+
+      const res = await request(app)
+        .put('/api/projects/999')
+        .set('Cookie', authCookies)
+        .send(updates);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty('message');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const updates = {
+        name: 'Updated Name'
+      };
+
+      const res = await request(app)
+        .put('/api/projects/1')
+        .send(updates);
+
+      expect(res.status).toBe(401);
+      expect(res.body).toHaveProperty('message');
+    });
+  });
+
+  describe('DELETE /api/projects/:id', () => {
+    it('should delete existing project', async () => {
+      // First create a project to delete
+      const newProject = {
+        name: 'Project to Delete',
+        description: 'This project will be deleted',
+        status: 'planning',
+        startDate: '2024-01-01',
+        budget: 25000,
+        companyId: 1,
+        clientId: 2
+      };
+
+      const createRes = await request(app)
+        .post('/api/projects')
+        .set('Cookie', authCookies)
+        .send(newProject);
+
+      const projectId = createRes.body.id;
+
+      // Then delete it
+      const deleteRes = await request(app)
+        .delete(`/api/projects/${projectId}`)
+        .set('Cookie', authCookies);
+
+      expect(deleteRes.status).toBe(200);
+      expect(deleteRes.body).toHaveProperty('message');
+
+      // Verify it's deleted
+      const getRes = await request(app)
+        .get(`/api/projects/${projectId}`)
+        .set('Cookie', authCookies);
+
+      expect(getRes.status).toBe(404);
+    });
+
+    it('should return 404 for non-existent project', async () => {
+      const res = await request(app)
+        .delete('/api/projects/999')
+        .set('Cookie', authCookies);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty('message');
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const res = await request(app)
+        .delete('/api/projects/1');
+
+      expect(res.status).toBe(401);
+      expect(res.body).toHaveProperty('message');
+    });
+  });
+});
