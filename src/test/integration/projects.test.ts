@@ -41,9 +41,10 @@ describe('Projects API', () => {
       expect(project).toHaveProperty('description');
       expect(project).toHaveProperty('status');
       expect(project).toHaveProperty('startDate');
-      expect(project).toHaveProperty('budget');
+      expect(project).toHaveProperty('budgetTotal');
       expect(project).toHaveProperty('companyId');
       expect(project).toHaveProperty('clientId');
+      expect(project).toHaveProperty('address');
     });
 
     it('should return 401 when not authenticated', async () => {
@@ -91,11 +92,11 @@ describe('Projects API', () => {
       const newProject = {
         name: 'Test Project',
         description: 'A test project for integration testing',
+        address: '123 Test Street',
         status: 'planning',
-        startDate: '2024-01-01',
-        endDate: '2024-12-31',
-        budget: 50000,
-        companyId: 1,
+        startDate: '2024-01-01T00:00:00.000Z',
+        endDate: '2024-12-31T00:00:00.000Z',
+        budgetTotal: '50000.00',
         clientId: 2
       };
 
@@ -109,7 +110,7 @@ describe('Projects API', () => {
       expect(res.body).toHaveProperty('name', newProject.name);
       expect(res.body).toHaveProperty('description', newProject.description);
       expect(res.body).toHaveProperty('status', newProject.status);
-      expect(res.body).toHaveProperty('budget', newProject.budget);
+      expect(res.body).toHaveProperty('budgetTotal', newProject.budgetTotal);
     });
 
     it('should return 400 for invalid project data', async () => {
@@ -151,8 +152,8 @@ describe('Projects API', () => {
     it('should update existing project with valid data', async () => {
       const updates = {
         name: 'Updated Project Name',
-        status: 'in_progress',
-        budget: 75000
+        status: 'active',
+        budgetTotal: '75000.00'
       };
 
       const res = await request(app)
@@ -164,7 +165,7 @@ describe('Projects API', () => {
       expect(res.body).toHaveProperty('id', 1);
       expect(res.body).toHaveProperty('name', updates.name);
       expect(res.body).toHaveProperty('status', updates.status);
-      expect(res.body).toHaveProperty('budget', updates.budget);
+      expect(res.body).toHaveProperty('budgetTotal', updates.budgetTotal);
     });
 
     it('should return 404 for non-existent project', async () => {
@@ -201,10 +202,10 @@ describe('Projects API', () => {
       const newProject = {
         name: 'Project to Delete',
         description: 'This project will be deleted',
+        address: '456 Delete Street',
         status: 'planning',
-        startDate: '2024-01-01',
-        budget: 25000,
-        companyId: 1,
+        startDate: '2024-01-01T00:00:00.000Z',
+        budgetTotal: '25000.00',
         clientId: 2
       };
 
