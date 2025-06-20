@@ -55,8 +55,8 @@ export async function createApp(options: {
   // Setup Vite middleware only in development and when requested
   if (isDevelopment && setupViteMiddleware && app.get("env") === "development") {
     await setupVite(app, server);
-  } else if (!setupViteMiddleware) {
-    // For production or when Vite is not needed
+  } else if (!setupViteMiddleware && process.env.NODE_ENV !== 'test') {
+    // For production or when Vite is not needed (but not in test environment)
     serveStatic(app);
   }
 
