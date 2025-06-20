@@ -9,7 +9,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 
 // Pages
 import Login from "@/pages/login";
-import WorkingDashboard from "@/pages/working-dashboard";
+import FinalDashboard from "@/pages/final-dashboard";
 import Projects from "@/pages/projects";
 import Schedule from "@/pages/schedule";
 import Costs from "@/pages/costs";
@@ -23,11 +23,11 @@ import NotFound from "@/pages/not-found";
 function AuthenticatedRoutes() {
   return (
     <Switch>
-      <Route path="/dashboard" component={WorkingDashboard} />
+      <Route path="/dashboard" component={FinalDashboard} />
       <Route path="/" exact>
         <Redirect to="/dashboard" />
       </Route>
-      <Route component={WorkingDashboard} />
+      <Route component={FinalDashboard} />
     </Switch>
   );
 }
@@ -46,16 +46,11 @@ function Router() {
     );
   }
 
-  return (
-    <Switch>
-      <Route path="/login">
-        {isAuthenticated ? <Redirect to="/dashboard" /> : <Login />}
-      </Route>
-      <Route>
-        {isAuthenticated ? <AuthenticatedRoutes /> : <Redirect to="/login" />}
-      </Route>
-    </Switch>
-  );
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
+  return <AuthenticatedRoutes />;
 }
 
 function App() {

@@ -49,7 +49,10 @@ export default function Login() {
         description: `Welcome back, ${user.firstName}!`,
       });
       
-      // Redirect will happen via useEffect
+      // Force immediate redirect after successful login
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 500);
       
     } catch (error) {
       toast({
