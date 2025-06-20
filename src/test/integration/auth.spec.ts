@@ -1,17 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
-import { createApp } from '@server/app';
+import createAppForTesting from '@server/index';
 import type { Express } from 'express';
 
 describe('Authentication API', () => {
   let app: Express;
 
   beforeAll(async () => {
-    const { app: testApp } = await createApp({ 
-      isDevelopment: false, 
-      setupViteMiddleware: false 
-    });
-    app = testApp;
+    app = await createAppForTesting();
   });
 
   describe('POST /api/auth/login', () => {

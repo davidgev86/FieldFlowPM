@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import request from 'supertest';
-import { createApp } from '@server/app';
+import createAppForTesting from '@server/index';
 import type { Express } from 'express';
 
 describe('Projects API', () => {
@@ -8,11 +8,7 @@ describe('Projects API', () => {
   let authCookies: string[];
 
   beforeAll(async () => {
-    const { app: testApp } = await createApp({ 
-      isDevelopment: false, 
-      setupViteMiddleware: false 
-    });
-    app = testApp;
+    app = await createAppForTesting();
   });
 
   beforeEach(async () => {

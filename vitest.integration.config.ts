@@ -6,7 +6,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     setupFiles: ['./src/test/integration/setup.ts'],
-    include: ['src/test/integration/**/*.test.ts'],
+    include: ['src/test/integration/**/*.spec.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
