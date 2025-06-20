@@ -1,0 +1,97 @@
+Enhance FieldFlowPM with Tests, Docs, Monitoring & Performance Budgets
+
+Verify & Run Existing Integration Tests
+
+Ensure test:integration is defined in package.json as vitest -c vitest.integration.config.ts.
+
+Run npm run test:integration and confirm all tests pass.
+ℹ️ Replit supports automated testing workflows via its Agent interface 
+docs.replit.com
+.
+
+Expand Integration Test Coverage
+
+In src/test/integration/, scaffold new specs:
+
+projects.spec.ts covering CRUD on /api/projects
+
+costs.spec.ts covering /api/projects/:id/costs
+
+changeOrders.spec.ts covering /api/projects/:id/change-orders
+
+dailyLogs.spec.ts covering /api/projects/:id/daily-logs
+
+Use import request from 'supertest' and import app from '../.. /server/index' in each file, then write positive and negative tests.
+ℹ️ Supertest + Vitest is the recommended pattern for HTTP‐level testing in Node.js 
+bakingai.com
+.
+
+Add End-to-End (E2E) Testing with Cypress
+
+Install Cypress: npm install --save-dev cypress.
+
+Scaffold cypress/ with e2e folder and create happyPath.cy.ts that:
+
+Opens /login, logs in as admin.
+
+Creates a new project via the UI.
+
+Adds a cost entry and verifies it appears on the dashboard.
+ℹ️ Cypress integrates seamlessly with Vite + React for real‐browser testing 
+datacamp.com
+.
+
+Automate CI for All Tests
+
+Create .github/workflows/ci.yml with steps to:
+
+Checkout code.
+
+Install dependencies.
+
+Spin up a PostgreSQL service.
+
+Run npm run test:integration.
+
+Run npx cypress run.
+
+Fail the pipeline on any test or coverage threshold error.
+ℹ️ GitHub Actions is the de-facto standard for CI in open-source Node.js projects 
+reddit.com
+.
+
+Generate Interactive API Documentation
+
+Install tsoa: npm install --save-dev tsoa openapi3-ts.
+
+Configure tsoa.json and annotate your routes and Zod schemas.
+
+Add a script "docs": "tsoa spec && tsoa routes" and serve Swagger UI at /docs.
+ℹ️ Spec-first or code-first OpenAPI workflows keep docs in sync with your code 
+analyticsvidhya.com
+.
+
+Integrate Runtime Error Monitoring (Sentry)
+
+Install Sentry: npm install @sentry/node @sentry/tracing.
+
+In your Express setup, initialize Sentry with DSN, add Sentry.Handlers.requestHandler() and Sentry.Handlers.errorHandler() middleware.
+ℹ️ Sentry provides real-time error reporting and performance tracing for Node.js apps 
+iamjesushusbands.medium.com
+.
+
+Enforce Bundle-Size Budgets
+
+Install vite-plugin-bundle-analyzer: npm install --save-dev vite-plugin-bundle-analyzer.
+
+In vite.config.ts, register the plugin and set a max-size threshold (e.g. 500 KB) to fail builds if exceeded.
+ℹ️ Keeping front-end payloads lean is critical for field apps with limited bandwidth 
+docs.replit.com
+.
+
+Checkpoint & Commit
+
+After each major step, commit your changes with clear messages.
+
+Confirm the Replit Agent creates checkpoints so you can roll back if needed.
+ℹ️ Replit’s checkpoint feature pairs nicely with incremental Agent tasks 
