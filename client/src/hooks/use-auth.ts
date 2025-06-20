@@ -64,11 +64,9 @@ export function useAuth() {
   }, []);
 
   const login = async (username: string, password: string): Promise<AuthUser> => {
-    console.log('Login attempt for:', username);
     setIsLoading(true);
     try {
       const user = await authManager.login(username, password);
-      console.log('Login successful, user:', user);
       
       // Update state immediately
       setUser(user);
@@ -76,7 +74,6 @@ export function useAuth() {
       
       return user;
     } catch (error) {
-      console.error('Login failed:', error);
       throw error;
     } finally {
       setIsLoading(false);

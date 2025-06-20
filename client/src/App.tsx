@@ -9,9 +9,6 @@ import { AppLayout } from "@/components/layout/AppLayout";
 
 // Pages
 import Login from "@/pages/login";
-import Dashboard from "@/pages/dashboard";
-import SimpleDashboard from "@/pages/simple-dashboard";
-import TestPage from "@/pages/test-page";
 import WorkingDashboard from "@/pages/working-dashboard";
 import Projects from "@/pages/projects";
 import Schedule from "@/pages/schedule";
@@ -24,33 +21,27 @@ import ClientPortal from "@/pages/client-portal";
 import NotFound from "@/pages/not-found";
 
 function AuthenticatedRoutes() {
-  console.log('AuthenticatedRoutes rendering');
-  
   return (
     <Switch>
-        <Route path="/dashboard">
-          <WorkingDashboard />
-        </Route>
-        <Route path="/">
-          <Redirect to="/dashboard" />
-        </Route>
-        <Route>
-          <WorkingDashboard />
-        </Route>
+      <Route path="/dashboard" component={WorkingDashboard} />
+      <Route path="/" exact>
+        <Redirect to="/dashboard" />
+      </Route>
+      <Route component={WorkingDashboard} />
     </Switch>
   );
 }
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
-  const [location] = useLocation();
-
-  console.log('Router state:', { isAuthenticated, isLoading, location });
 
   if (isLoading) {
     return (
-      <div style={{ padding: '20px', backgroundColor: 'yellow' }}>
-        <h1>Loading...</h1>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading FieldFlowPM...</p>
+        </div>
       </div>
     );
   }

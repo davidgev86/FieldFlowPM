@@ -15,7 +15,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const { data: projects, isLoading, error } = useProjects();
 
-  console.log('Dashboard render:', { user, projects, isLoading, error });
+
 
   if (isLoading) {
     return (
@@ -57,7 +57,7 @@ export default function Dashboard() {
     overdueTasks: 2, // This would come from task analysis
   };
 
-  console.log('Rendering dashboard with:', { activeProjects, stats });
+
   
   return (
     <div className="container mx-auto p-4 max-w-7xl space-y-6">

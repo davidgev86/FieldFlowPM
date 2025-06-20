@@ -45,7 +45,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     { name: 'Contacts', href: '/contacts', icon: Users, current: location === '/contacts' },
   ];
 
-  console.log('AppLayout rendering with user:', user);
+
   
   return (
     <div className="min-h-screen bg-gray-50">

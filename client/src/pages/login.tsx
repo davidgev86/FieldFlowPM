@@ -21,9 +21,7 @@ export default function Login() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    console.log('Login page: isAuthenticated changed to:', isAuthenticated);
     if (isAuthenticated) {
-      console.log('Redirecting to dashboard...');
       setLocation('/dashboard');
     }
   }, [isAuthenticated, setLocation]);
@@ -51,9 +49,7 @@ export default function Login() {
         description: `Welcome back, ${user.firstName}!`,
       });
       
-      // Force immediate redirect
-      console.log('Forcing redirect to dashboard');
-      setLocation('/dashboard');
+      // Redirect will happen via useEffect
       
     } catch (error) {
       toast({
