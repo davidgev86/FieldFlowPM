@@ -3,6 +3,8 @@ import cookieParser from "cookie-parser";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
+import { setupMonitoring } from "./monitoring";
+import { setupDocs } from "./docs";
 import { type Server } from "http";
 
 export async function createApp(options: { 
@@ -12,6 +14,10 @@ export async function createApp(options: {
   const { isDevelopment = true, setupViteMiddleware = true } = options;
   
   const app = express();
+
+  // Initialize monitoring (must be first)
+  const monitoring = setupMonitoring(app);
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
@@ -52,6 +58,11 @@ export async function createApp(options: {
 
   const server = await registerRoutes(app);
 
+  // Setup API documentation
+  if (process.env.NODE_ENV !== 'test') {
+    setupDocs(app);
+  }
+
   // Setup Vite middleware only in development and when requested
   if (isDevelopment && setupViteMiddleware && app.get("env") === "development") {
     await setupVite(app, server);
@@ -59,6 +70,9 @@ export async function createApp(options: {
     // For production or when Vite is not needed (but not in test environment)
     serveStatic(app);
   }
+
+  // Sentry error handler (must be before other error handlers)
+  app.use(monitoring.errorHandler);
 
   // Error handling middleware
   app.use(errorHandler);

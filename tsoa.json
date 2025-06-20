@@ -1,0 +1,30 @@
+{
+  "entryFile": "server/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["server/routes.ts"],
+  "spec": {
+    "outputDirectory": "docs",
+    "specVersion": 3,
+    "host": "localhost:5000",
+    "name": "FieldFlowPM API",
+    "description": "Construction Project Management API",
+    "version": "1.0.0",
+    "license": "MIT",
+    "contact": {
+      "name": "FieldFlowPM Support",
+      "email": "support@fieldflowpm.com"
+    },
+    "securityDefinitions": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionId"
+      }
+    }
+  },
+  "routes": {
+    "routesDir": "server",
+    "middleware": "express",
+    "middlewareTemplate": "server/middleware/tsoa.hbs"
+  }
+}
