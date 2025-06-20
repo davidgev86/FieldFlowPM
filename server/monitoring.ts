@@ -1,8 +1,14 @@
 import * as Sentry from '@sentry/node';
-import * as Tracing from '@sentry/tracing';
 import type { Express } from 'express';
 
 export function setupMonitoring(app: Express) {
+  // Skip Sentry in test environment or if DSN not configured
+  if (process.env.NODE_ENV === 'test' || !process.env.SENTRY_DSN) {
+    return {
+      errorHandler: (err: any, req: any, res: any, next: any) => next(err)
+    };
+  }
+
   // Initialize Sentry
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
@@ -10,7 +16,6 @@ export function setupMonitoring(app: Express) {
     integrations: [
       new Sentry.Integrations.Http({ tracing: true }),
       new Sentry.Integrations.Express({ app }),
-      new Tracing.Integrations.Postgres(),
     ],
     tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
     beforeSend(event) {
