@@ -51,7 +51,9 @@ export default function Login() {
         description: `Welcome back, ${user.firstName}!`,
       });
       
-      // Redirect will happen via useEffect when isAuthenticated changes
+      // Force immediate redirect
+      console.log('Forcing redirect to dashboard');
+      setLocation('/dashboard');
       
     } catch (error) {
       toast({

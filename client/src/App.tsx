@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
@@ -12,6 +12,7 @@ import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import SimpleDashboard from "@/pages/simple-dashboard";
 import TestPage from "@/pages/test-page";
+import WorkingDashboard from "@/pages/working-dashboard";
 import Projects from "@/pages/projects";
 import Schedule from "@/pages/schedule";
 import Costs from "@/pages/costs";
@@ -26,24 +27,25 @@ function AuthenticatedRoutes() {
   console.log('AuthenticatedRoutes rendering');
   
   return (
-    <div style={{ padding: '20px', backgroundColor: 'lightgreen' }}>
-      <h1 style={{ color: 'red' }}>AUTHENTICATED ROUTES</h1>
-      <Switch>
+    <Switch>
         <Route path="/dashboard">
-          <TestPage />
+          <WorkingDashboard />
         </Route>
         <Route path="/">
-          <TestPage />
+          <Redirect to="/dashboard" />
         </Route>
-      </Switch>
-    </div>
+        <Route>
+          <WorkingDashboard />
+        </Route>
+    </Switch>
   );
 }
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
+  const [location] = useLocation();
 
-  console.log('Router state:', { isAuthenticated, isLoading });
+  console.log('Router state:', { isAuthenticated, isLoading, location });
 
   if (isLoading) {
     return (
@@ -53,11 +55,16 @@ function Router() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
-  return <AuthenticatedRoutes />;
+  return (
+    <Switch>
+      <Route path="/login">
+        {isAuthenticated ? <Redirect to="/dashboard" /> : <Login />}
+      </Route>
+      <Route>
+        {isAuthenticated ? <AuthenticatedRoutes /> : <Redirect to="/login" />}
+      </Route>
+    </Switch>
+  );
 }
 
 function App() {
