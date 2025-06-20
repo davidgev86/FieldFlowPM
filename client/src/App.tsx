@@ -11,6 +11,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import SimpleDashboard from "@/pages/simple-dashboard";
+import TestPage from "@/pages/test-page";
 import Projects from "@/pages/projects";
 import Schedule from "@/pages/schedule";
 import Costs from "@/pages/costs";
@@ -22,66 +23,41 @@ import ClientPortal from "@/pages/client-portal";
 import NotFound from "@/pages/not-found";
 
 function AuthenticatedRoutes() {
+  console.log('AuthenticatedRoutes rendering');
+  
   return (
-    <Switch>
-      <Route path="/" exact>
-        <Redirect to="/dashboard" />
-      </Route>
-      <Route path="/dashboard" component={SimpleDashboard} />
-      <Route path="/projects">
-        <AppLayout><Projects /></AppLayout>
-      </Route>
-      <Route path="/schedule">
-        <AppLayout><Schedule /></AppLayout>
-      </Route>
-      <Route path="/costs">
-        <AppLayout><Costs /></AppLayout>
-      </Route>
-      <Route path="/change-orders">
-        <AppLayout><ChangeOrders /></AppLayout>
-      </Route>
-      <Route path="/documents">
-        <AppLayout><Documents /></AppLayout>
-      </Route>
-      <Route path="/daily-log">
-        <AppLayout><DailyLog /></AppLayout>
-      </Route>
-      <Route path="/contacts">
-        <AppLayout><Contacts /></AppLayout>
-      </Route>
-      <Route path="/client-portal">
-        <AppLayout><ClientPortal /></AppLayout>
-      </Route>
-      <Route component={NotFound} />
-    </Switch>
+    <div style={{ padding: '20px', backgroundColor: 'lightgreen' }}>
+      <h1 style={{ color: 'red' }}>AUTHENTICATED ROUTES</h1>
+      <Switch>
+        <Route path="/dashboard">
+          <TestPage />
+        </Route>
+        <Route path="/">
+          <TestPage />
+        </Route>
+      </Switch>
+    </div>
   );
 }
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  console.log('Router state:', { isAuthenticated, isLoading });
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center space-y-4">
-          <LoadingSpinner size="lg" />
-          <p className="text-sm text-gray-600">Loading FieldFlowPM...</p>
-        </div>
+      <div style={{ padding: '20px', backgroundColor: 'yellow' }}>
+        <h1>Loading...</h1>
       </div>
     );
   }
 
-  return (
-    <Switch>
-      <Route path="/login">
-        {isAuthenticated ? <Redirect to="/dashboard" /> : <Login />}
-      </Route>
-      
-      <Route path="/">
-        {isAuthenticated ? <AuthenticatedRoutes /> : <Redirect to="/login" />}
-      </Route>
-    </Switch>
-  );
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
+  return <AuthenticatedRoutes />;
 }
 
 function App() {
